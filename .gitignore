@@ -1,0 +1,30 @@
+# Configuración y credenciales
+.env
+config.ini
+settings.json
+appsettings.json
+
+# Archivos de bases de datos y backups
+*.csv
+*.xlsx
+*.json
+*.parquet
+*.bak
+*.mdf
+*.ldf
+
+# Archivos de logs
+*.log
+
+# Archivos de SSIS (Integration Services) que pueden contener info sensible
+*.dtsx
+*.dtproj
+*.dtproj.user
+
+# Archivos de Visual Studio
+bin/
+obj/
+.vs/
+.vscode/
+*.suo
+*.user
