@@ -14,7 +14,7 @@ Seguidamente a pedido del cliente en su momento se tenian que convertir columnas
 ![Imgur](https://i.imgur.com/ESguGDC.png?1)
 
 2. Creamos dos tablas una para cargar los datos de la tabla excel y otra ya con datos duplicados filtrados: 
-
+```sql
     IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Desempeno_Final')
 BEGIN
     CREATE TABLE Desempeno_Final (
@@ -74,13 +74,13 @@ END;
 --ADD CONSTRAINT UCT_Desempeno_Unico
 --UNIQUE (Periodo, [Unidad de Negocio], Empresa, [Nro --de documento]);
 
-
+```
 
 
 
 
  1. Cargamos la tabla sin duplicados:
-
+```sql
      WITH CTE AS (
     SELECT 
         Periodo, 
@@ -199,9 +199,10 @@ WHEN NOT MATCHED THEN
         source.[% Bono Target Ajustado], 
         source.[% Bono Anual Real]
     );
-
+```
  2. Con este codigo garantizamos que las nuevas inserciones de datos no nos generara problemas de duplicados:
 
+```sql
     IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Desempeno_Final')
 BEGIN
     MERGE INTO Desempeno_Final AS target
@@ -254,9 +255,11 @@ BEGIN
             source.[% Bono Anual Real]
         );
 END
+```
 
  3. Finlamente esta es la funcion UNPIVOT que convertira columnas en filas y las guardara en una tabla:
 
+```sql
     SELECT 
     Periodo,
     [Unidad de Negocio],
@@ -298,7 +301,7 @@ UNPIVOT
         [Desempeño - Resultado Cualitativo UN]
     )
 ) AS PivotTable;
-
+```
 
  4. Algunas consideraciones:
 
@@ -311,15 +314,16 @@ si la tabla **Desempeno_Final** tiene **8,378 registros**, el cálculo para los 
 
 ### Proceso de cálculo:
 
--   Estás pivotando **9 columnas**:  
+-   Estás pivotando **9 columnas**:
+  
     `[A# Scorecard - Objetivos]`, `[Comp 1# Estratega]`, `[Comp 2# Ejecutor]`, `[Comp 3# Desarrollador de Personas]`, `[Comp 4# Comunicador]`, `[Comp 5# Generador de Relaciones]`, `[B# Competencias]`, `[Desempeño - Resultado Cuantitativo UN]`, y `[Desempeño - Resultado Cualitativo UN]`.
-    
+ 
 -   Si la tabla original tiene **8,378 registros**, y después del pivoteo, se generarían 9 filas por cada uno de esos registros (asumiendo que no hay valores nulos).
 - 8,378×9=75,402 registros8,378 
 
 
 6. Algunos codigos que pueden servir para identificar duplicados:
-
+```sql
     select count(*) from Desempeno; --8380
 --2 duplicados
 SELECT 
